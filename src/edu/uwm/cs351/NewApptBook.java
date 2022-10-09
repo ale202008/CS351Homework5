@@ -303,20 +303,33 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			// - then check if the cursor is in the list
 			// - it must be in list if we can remove the 
 			//   current element or if it's not null
+			
+			//Same first two tests in Homework 3's MyIterators invariants.
+			if (!NewApptBook.this.wellFormed()) {
+				return false;
+			}
+			if (version != colVersion) {
+				return true; //not my fault if it broken.
+			}
+			
+			//Checks if cursor is in the list.
+			if (canRemove == true || cursor != null) {
+				Node i;
+				for (i = head; i != null; i = i.next) {
+					if (i == cursor) {
+						break;
+					}
+				}
+				if(i != cursor) {
+					return report("cursor is not in the list.");
+				}
+			}
+
 			return true;
 		}
 		
 		private void checkVersion() {
 			if (colVersion != version) throw new ConcurrentModificationException("stale iterator");
-		}
-		
-		private static boolean doReport = true;
-		private boolean report(String error) {
-			//Prints out stuff
-			if (doReport) {
-				System.out.println("Invariant error: " + error);
-			}
-			return false;
 		}
 		
 		@Override //required
@@ -350,8 +363,6 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		public MyIterator() {
 			cursor = null;
 		}
-		
-
 	}
 	
 	public static class TestInvariantChecker extends TestCase {
