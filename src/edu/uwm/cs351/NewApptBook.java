@@ -50,6 +50,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		 */
 		public Node(Appointment a) {
 			data = a;
+			next = prev = null;
 		}
 		
 	}
@@ -68,17 +69,92 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		assert wellFormed() : "invariant failed at end of constructor";
 	}
 	
+	/*
+	 * wellFormed method that checks for 7 invariants
+	 * 1. The prev and next links must match up: whenever one node's next
+	 * field points to another, the one's prev field must point back.
+	 * 2. The tail pointer can be null if and only if the head pointer is null.
+	 * 3. If the tail pointer is not null, it must be reachable from the head pointer
+	 * and have no nodes after it.
+	 * 4. Similarly, the head cannot have any nodes before it. (But this should be
+	 * checked at the beginning so we can avoid getting suck in a cycle)
+	 * 5. The declared number of items must be the same as the actual number of nodes
+	 * in the list, starting from the head.
+	 * 6. None of the element ("data" of the nodes) can be null.
+	 * 7. The elements must be in non-decreasing order according to natural ordering.
+	 */
 	public boolean wellFormed() {
+		
+		//Invariant 4
+		if (head.prev != null) {
+			return report("the head has a previous node before it, head.prev != null.");
+		}
+		
+		//invariant 3
+		if (tail.next != null) {
+			return report("the tail has a next node after it, tail.next != null.");
+		}
+		Node t;
+		for(t = head; t != null; t = t.next) {
+			if (t == tail) {
+				break;
+			}
+		}
+		if (t != tail) {
+			return report("tail was not reachable by head.");
+		}
+		
+		//invariant 5
+		int count = 0;
+		for (Node i = head; i != null; i = i.next) {
+			if (i != null) {
+				count++;
+			}
+		}
+		if (count != manyItems) {
+			return report("manyItems is not equal to the amount of elements.");
+		}
+		
+		//invariant 1
+		for (Node i = head; i != null; i = i.next) {
+			if (i.next != null && i.next.prev != i) {
+				return report("the next Node's prev does not point back.");
+			}
+		}
+		
+		//invariant 2
+		if (head == null && tail != null) {
+			return report("head is null, but tail is not.");
+		}
+		
+		//invariant 6
+		for (Node i = head; i != null; i = i.next) {
+			if (i.data == null) {
+				return report("a data in a Node is null.");
+			}
+		}
+		
+		//invariant 7
+		for (Node i = head; i != null; i = i.next) {
+			if (i.next != null && i.data.compareTo(i.next.data) > 0) {
+				return report("not well ordered.");
+			}
+		}
+		
 		return true;
+	}
+	
+	public void add(){
+		
 	}
 	
 	@Override //Implementation
 	public int size() {
 		// TODO Auto-generated method stub
-		return 0;
+		return manyItems;
 	}
 	
-	@Override
+	@Override //required
 	public Iterator<Appointment> iterator() {
 		// TODO Auto-generated method stub
 		MyIterator it = new MyIterator();
