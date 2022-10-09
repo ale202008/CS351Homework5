@@ -190,11 +190,9 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		
 		if (head == null || head.data.compareTo(element) > 0)  {
 			head = new Node(element);
-			tail = head;
 			manyItems++;
 			if (manyItems == 1) {
-				head.prev.next = head;
-				tail.prev = head;
+				tail = head;
 			}
 		}
 		else {
@@ -209,8 +207,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		}
 		
 		version++;
-		
-		assert wellFormed() : "invariant failed at end of add" ;
+		assert wellFormed() : "invariant failed at end of add";
 		return true;
 	}
 	
@@ -290,6 +287,12 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		return it;
 	}
 	
+	public Iterator<Appointment> iterator(Appointment o) {
+		// TODO Auto-generated method stub
+		MyIterator it = new MyIterator(o);
+		return it;
+	}
+	
 
 	private class MyIterator implements Iterator<Appointment>, Iterable<Appointment>
 	{
@@ -343,11 +346,17 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		
 		@Override //required
 		public boolean hasNext() {
-			//Returns true if next is less than many items, and false otherwise
 			assert wellFormed(): "invariant failed at the start of hasNext.";
 			
-
-			return false;
+			
+			if (version != colVersion) {
+				throw new ConcurrentModificationException();
+			}
+			if (cursor == null || cursor.next == null) {
+				return false;
+			}
+				
+			return true;
 		}
 
 		@Override //required
@@ -355,10 +364,23 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			//Checks to see if there exists an element beyond
 			assert wellFormed(): "invariant failed at the start of next";
 			
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			else {
+				if (version != colVersion) {
+					throw new ConcurrentModificationException();
+				}
+			}
+			
+			cursor = cursor.next;
+			
+
+			
 			
 			assert wellFormed(): "invariant failed at the end of next";
 			
-			return null;
+			return cursor.data;
 		}
 
 		@Override //required
@@ -370,7 +392,11 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		}
 		
 		public MyIterator() {
-			cursor = null;
+			cursor.next = head;
+		}
+		
+		public MyIterator(Appointment o) {
+			cursor = new Node(o);
 		}
 	}
 	
