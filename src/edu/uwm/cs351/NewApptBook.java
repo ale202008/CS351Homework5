@@ -63,6 +63,10 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 	Node head;
 	Node tail;
 	
+	/*
+	 * Constructor for NewApptBook that basically 
+	 * sets everything to its initial values.
+	 */
 	public NewApptBook() {
 		
 		manyItems = 0;
@@ -89,12 +93,12 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 	public boolean wellFormed() {
 		
 		//Invariant 4
-		if (head.prev != null) {
+		if (head != null && head.prev != null) {
 			return report("the head has a previous node before it, head.prev != null.");
 		}
 		
 		//invariant 3
-		if (tail.next != null) {
+		if (tail != null && tail.next != null) {
 			return report("the tail has a next node after it, tail.next != null.");
 		}
 		Node t;
@@ -192,11 +196,74 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		return true;
 	}
 	
+	/*
+	 * Took some parts from both Homework 3 and Homework 4,
+	 * mostly Homework 4 to make the addAll method. Takes a new
+	 * NewApptBook collection and makes a collectionClone that is
+	 * equal to collection and if the collection is equal to this
+	 * NewApptBook, then use the clone method.
+	 */
+	public boolean addAll(NewApptBook collection) {
+		
+		if (collection.manyItems == 0) {
+			return false;
+		}
+		
+		NewApptBook collectionClone = collection;
+		
+		if (collection == this) {
+			collectionClone = collection.clone();
+		}
+
+		for (Node i = collectionClone.head; i != null; i = i.next) {
+			this.add(i.data);
+		}
+		
+		return true;
+	}
+	
 	@Override //Implementation
 	public int size() {
 		// TODO Auto-generated method stub
 		return manyItems;
 	}
+	
+	/*
+	 * Straight copy of the clone method in Homework 4
+	 * except that it does not check for the current element
+	 * as we do not have a cursor in main class. Might see if I can
+	 * check through MyIterator class, or might not need to.
+	 */
+	public NewApptBook clone() {
+		
+		assert wellFormed(): "Invariant failed at the start of clone";
+
+		NewApptBook answer;
+	
+		try
+		{
+			answer = (NewApptBook) super.clone( );
+		}
+		catch (CloneNotSupportedException e)
+		{  // This exception should not occur. But if it does, it would probably
+			// indicate a programming error that made super.clone unavailable.
+			// The most common error would be forgetting the "Implements Cloneable"
+			// clause at the start of this class.
+			throw new RuntimeException
+			("This class does not implement Cloneable");
+		}
+	
+		answer = new NewApptBook();
+		
+		for (Node i = this.head; i != null; i = i.next) {
+			answer.add(i.data);
+		}
+		
+		assert wellFormed(): "Invariant failed at the end of clone";
+		assert answer.wellFormed(): "answer failed well order.";
+		return answer;
+	}
+	
 	
 	@Override //required
 	public Iterator<Appointment> iterator() {
@@ -204,8 +271,13 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		MyIterator it = new MyIterator();
 		return it;
 	}
+	
+	public Iterator<Appointment> iterator(Appointment o){
+		MyIterator it = new MyIterator(o);
+		return it;
+	}
 
-	private class MyIterator implements Iterator<Appointment> 
+	private class MyIterator implements Iterator<Appointment>, Iterable<Appointment>
 	{
 		private Node cursor;
 		private boolean canRemove = false;
@@ -256,6 +328,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		@Override //required
 		public Iterator<Appointment> iterator() {
 			// TODO Auto-generated method stub
+			cursor = null;
 			return this;
 
 		}
@@ -264,7 +337,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 
 		}
 		
-		public MyIterator(int Index) {
+		public MyIterator(Appointment o) {
 
 
 		}
