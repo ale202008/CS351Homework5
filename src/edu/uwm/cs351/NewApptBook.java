@@ -2,6 +2,9 @@ package edu.uwm.cs351;
 
 import java.util.AbstractCollection;
 import java.util.function.Consumer;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import junit.framework.TestCase;
 
@@ -36,11 +39,6 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 	// But do not include any of the cursor-related methods, and in particular,
 	// make sure you have no "cursor" field.
 	
-	private int manyItems;
-	private int version;
-	Node head;
-	Node tail;
-	
 	private static class Node {
 		Appointment data;
 		Node next;
@@ -50,14 +48,42 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		 * Constructs a new Node object given an Appointment, a next node,
 		 * and a previous node.
 		 */
-		public Node(Appointment a, Node n, Node p) {
+		public Node(Appointment a) {
 			data = a;
-			next = n;
-			prev = p;
 		}
 		
 	}
-
+	
+	private int manyItems;
+	private int version;
+	Node head;
+	Node tail;
+	
+	public NewApptBook() {
+		
+		manyItems = 0;
+		version = 0;
+		head = tail = null;
+		
+		assert wellFormed() : "invariant failed at end of constructor";
+	}
+	
+	public boolean wellFormed() {
+		return true;
+	}
+	
+	@Override //Implementation
+	public int size() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	@Override
+	public Iterator<Appointment> iterator() {
+		// TODO Auto-generated method stub
+		MyIterator it = new MyIterator();
+		return it;
+	}
 
 	private class MyIterator implements Iterator<Appointment> 
 	{
@@ -76,6 +102,51 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		
 		private void checkVersion() {
 			if (colVersion != version) throw new ConcurrentModificationException("stale iterator");
+		}
+		
+		private static boolean doReport = true;
+		private boolean report(String error) {
+			//Prints out stuff
+			if (doReport) {
+				System.out.println("Invariant error: " + error);
+			}
+			return false;
+		}
+		
+		@Override //required
+		public boolean hasNext() {
+			//Returns true if next is less than many items, and false otherwise
+			assert wellFormed();
+			
+
+			return false;
+		}
+
+		@Override //required
+		public Appointment next() {
+			//Checks to see if there exists an element beyond
+			assert wellFormed();
+			
+			
+			assert wellFormed();
+			
+			return null;
+		}
+
+		@Override //required
+		public Iterator<Appointment> iterator() {
+			// TODO Auto-generated method stub
+			return this;
+
+		}
+		
+		public MyIterator() {
+
+		}
+		
+		public MyIterator(int Index) {
+
+
 		}
 
 	}
@@ -777,4 +848,6 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			assertWellFormed(selfit, true);
 		}
 	}
+
+
 }
