@@ -2,6 +2,9 @@ package edu.uwm.cs351;
 
 import java.util.AbstractCollection;
 import java.util.function.Consumer;
+
+import edu.uwm.cs351.ApptBook.Node;
+
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -48,8 +51,8 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		 * Constructs a new Node object given an Appointment, a next node,
 		 * and a previous node.
 		 */
-		public Node(Appointment a) {
-			data = a;
+		public Node(Appointment o) {
+			data = o;
 			next = prev = null;
 		}
 		
@@ -144,8 +147,49 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		return true;
 	}
 	
-	public void add(){
+	/*
+	 * I am gonna use pretty much the same code from the
+	 * insert method from Homework 4 with some additional
+	 * changes. Pretty sure I am going to be implementing
+	 * the insertSort mentioned in the lecture notes, but
+	 * if copying over the code from the past homework
+	 * works then we roll with it.
+	 */
+	public boolean add(Appointment element){	
+		assert wellFormed() : "invariant failed at start of add";
+		// TODO: Implemented by student.
 		
+		/*
+		 * Used online lecture notes for help with the
+		 * code and only minor changes for certain cases.
+		 */
+		
+		if (element == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		if (head == null || head.data.compareTo(element) > 0)  {
+			head = new Node(element);
+			manyItems++;
+			if (manyItems == 1) {
+				head.prev.next = head;
+			}
+		}
+		else {
+			Node i;
+			for (i = head; i.next != null; i = i.next) {
+				if(i.next.data.compareTo(element) > 0) {
+					break;
+				}
+			}
+			i.next = new Node(element);
+			manyItems++;
+		}
+		
+		version++;
+		
+		assert wellFormed() : "invariant failed at end of add" ;
+		return true;
 	}
 	
 	@Override //Implementation
