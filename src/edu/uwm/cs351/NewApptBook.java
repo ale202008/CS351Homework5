@@ -320,8 +320,8 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 						break;
 					}
 				}
-				if(i != cursor) {
-					return report("cursor is not in the list.");
+				if(i != cursor || cursor == null) {
+					return report("cursor is not in the list or is null.");
 				}
 			}
 
