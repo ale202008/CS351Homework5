@@ -296,7 +296,16 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		private Node cursor;
 		private boolean canRemove = false;
 		private int colVersion = version;
-
+		
+		/*
+		 * The first two if statements are the invariants taken from
+		 * Homework 3 and the last invariant is an if statement that 
+		 * checks for the two conditions notes in the comments below.
+		 * In that if statement we have a for loop that will check if
+		 * a node is equal to the cursor, and if so breaks the loop. It
+		 * then checks if the cursor is null or if i does not equal to the
+		 * cursor, meaning the cursor did not exist within the list.
+		 */
 		public boolean wellFormed() {
 			// TODO
 			// - same first two tests as in Homework #3
