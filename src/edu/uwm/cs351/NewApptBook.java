@@ -35,6 +35,29 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 	// You are permitted to copy in any useful code/comments from the Homework #3 or #4 solution.
 	// But do not include any of the cursor-related methods, and in particular,
 	// make sure you have no "cursor" field.
+	
+	private int manyItems;
+	private int version;
+	Node head;
+	Node tail;
+	
+	private static class Node {
+		Appointment data;
+		Node next;
+		Node prev;
+		
+		/*
+		 * Constructs a new Node object given an Appointment, a next node,
+		 * and a previous node.
+		 */
+		public Node(Appointment a, Node n, Node p) {
+			data = a;
+			next = n;
+			prev = p;
+		}
+		
+	}
+
 
 	private class MyIterator implements Iterator<Appointment> 
 	{
