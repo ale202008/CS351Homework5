@@ -5,6 +5,11 @@ import java.util.function.Consumer;
 
 import junit.framework.TestCase;
 
+/*
+ * Andrew Le
+ * Homework 5, CS 351
+ */
+
 /**
  * A variant of the ApptBook ADT that follows the Collection model.
  * In particular, it has no sense of a current element.
