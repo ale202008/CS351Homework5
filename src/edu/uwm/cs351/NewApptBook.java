@@ -482,12 +482,33 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 
 		}
 		
+		/*
+		 * Constructor for MyIterator, setting
+		 * cursor equal to head.
+		 */
 		public MyIterator() {
 			cursor = head;
 		}
 		
+		/*
+		 * Constructor for MyIterator given an appointment,
+		 * looks through the list by a for-loop for a node
+		 * that has an identical appointment, and if so makes
+		 * cursor equal to that node and breaks the loop. If not
+		 * it keeps setting cursor to null, meaning the element was
+		 * not in the list.
+		 */
 		public MyIterator(Appointment o) {
-			cursor = new Node(o);
+			for (Node i = head; i != null; i = i.next) {
+				if (i.data == o) {
+					cursor = i;
+					break;
+				}
+				else {
+					cursor = null;
+				}
+			}
+			
 		}
 	}
 	
