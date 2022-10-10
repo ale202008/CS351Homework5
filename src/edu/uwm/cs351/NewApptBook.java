@@ -63,8 +63,8 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 	Node tail;
 	
 	/*
-	 * Constructor for NewApptBook that basically 
-	 * sets everything to its initial values.
+	 * Constructor for NewApptBook
+	 * Sets fields to initial values
 	 */
 	public NewApptBook() {
 		
@@ -89,7 +89,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 	 * 6. None of the element ("data" of the nodes) can be null.
 	 * 7. The elements must be in non-decreasing order according to natural ordering.
 	 */
-	public boolean wellFormed() {
+	private boolean wellFormed() {
 		
 		//Invariant 4
 		if (head != null && head.prev != null) {
@@ -166,21 +166,17 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		return true;
 	}
 	
-	/*
-	 * Had to apply some changes so that the add method can work.
-	 * Basically checks if there is an empty list just add the element,
-	 * if the element is < the head just add before, and if it is greater
-	 * look for which node it is less than and if not that means it is greater
-	 * than the tail so add it at the end.
+	/**
+	 * Used similar code from Homework 4 with different cases
+	 * @param 
+	 * 		Appointment object to be added to the doubly list.
+	 * @exception
+	 * 		if element is null throw an exception
+	 * @return 
+	 * 		true if add() is called.
 	 */
 	public boolean add(Appointment element){	
 		assert wellFormed() : "invariant failed at start of add";
-		// TODO: Implemented by student.
-		
-		/*
-		 * Used online lecture notes for help with the
-		 * code and only minor changes for certain cases.
-		 */
 		
 		if (element == null) {
 			throw new NullPointerException();
@@ -225,12 +221,15 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		return true;
 	}
 	
-	/*
-	 * Took some parts from both Homework 3 and Homework 4,
-	 * mostly Homework 4 to make the addAll method. Takes a new
-	 * NewApptBook collection and makes a collectionClone that is
-	 * equal to collection and if the collection is equal to this
-	 * NewApptBook, then use the clone method.
+	/**
+	 * Took code from both Homework 3 and Homework 4 for the
+	 * addAll() method.
+	 * @param 
+	 * 		NewApptBook collection that will be added to the list
+	 * @exception or return
+	 * 		if collection is empty, return false. Could be an exception if needed.
+	 * @return 
+	 * 		true if addAll() is called.
 	 */
 	public boolean addAll(NewApptBook collection) {
 		
@@ -251,17 +250,12 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		return true;
 	}
 	
-	@Override //Implementation
+	@Override //implementation
 	public int size() {
 		// TODO Auto-generated method stub
 		return manyItems;
 	}
 	
-	/*
-	 * Realized that the clone method was inefficient, so instead used a code
-	 * given from Homework 4 solutions as a base and am working on it to work
-	 * with the fields next and prev.
-	 */
 	@Override //implementation
 	public NewApptBook clone() {
 		
@@ -274,10 +268,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			answer = (NewApptBook) super.clone( );
 		}
 		catch (CloneNotSupportedException e)
-		{  // This exception should not occur. But if it does, it would probably
-			// indicate a programming error that made super.clone unavailable.
-			// The most common error would be forgetting the "Implements Cloneable"
-			// clause at the start of this class.
+		{  
 			throw new RuntimeException
 			("This class does not implement Cloneable");
 		}
@@ -314,6 +305,17 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		return it;
 	}
 	
+	/**
+	 * Iterator method that takes an Appointment object
+	 * in the main class.
+	 * @param
+	 * 		Appointment object to set cursor at if in the list, if not cursor
+	 * 		is equal to head.
+	 * @exception
+	 * 		if Appointment object is null, return exception.
+	 * @return
+	 * 		return MyIterator it object that with initialized cursor.
+	 */
 	public Iterator<Appointment> iterator(Appointment o) {
 		// TODO Auto-generated method stub
 		if (o == null) {
@@ -330,14 +332,11 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		private boolean canRemove = false;
 		private int colVersion = version;
 		
-		/*
-		 * The first two if statements are the invariants taken from
-		 * Homework 3 and the last invariant is an if statement that 
-		 * checks for the two conditions notes in the comments below.
-		 * In that if statement we have a for loop that will check if
-		 * a node is equal to the cursor, and if so breaks the loop. It
-		 * then checks if the cursor is null or if i does not equal to the
-		 * cursor, meaning the cursor did not exist within the list.
+		/**
+		 * Used similar code and invariant rules from Homework 3
+		 * Checks the invariants.
+		 * @return
+		 * 		true if no invariants were passed.
 		 */
 		public boolean wellFormed() {
 			// TODO
@@ -422,20 +421,14 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		}
 		
 		
-		/*
-		 * Remove method that starts by locating the node that cursor is equal
-		 * to so that we can manipulate the nodes fields with special cases such as:
-		 * their exists only 1 element, the element is heads or tails, and regular 
-		 * element.
+		/**
+		 * remove() methods that removes the current position where
+		 * cursor is.
+		 * @exception
+		 * 		if version is not equal to the colVersion, then throw exception.
+		 * 		if canRemove is false, then throw exception.
 		 */
 		public void remove() {
-			/**
-			 * Since we are removing the current element that means there will not exist
-			 * an element within the iterator if the collection has not changed. So the condition
-			 * is that after the remove method is called once, next = 0 and current = 0 like how
-			 * the fields were initialized in the constructors.
-			 */
-			
 			assert wellFormed(): "invariant failed at the start of remove";
 			
 			if (version != colVersion) {
@@ -484,21 +477,28 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 
 		}
 		
-		/*
-		 * Constructor for MyIterator, setting
-		 * cursor equal to head.
+		/**
+		 * Constructor for MyIterator
+		 * Sets cursor equal to head as
+		 * canRemove is false initially.
 		 */
 		public MyIterator() {
 			cursor = head;
 		}
 		
-		/*
-		 * Constructor for MyIterator given an appointment,
-		 * looks through the list by a for-loop for a node
-		 * that has an identical appointment, and if so makes
-		 * cursor equal to that node and breaks the loop. If not
-		 * it keeps setting cursor to null, meaning the element was
-		 * not in the list.
+		/**
+		 * Constructor for MyIterator given an Appointment
+		 * object
+		 * @param
+		 * 		Appointment object that ran through the list to check
+		 * 		for certain cases:
+		 * 		1. if object is greater than i.data, have cursor = i.next
+		 * 		as the object does not occur in the list, but cursor
+		 * 		points to the node after where it would have been.
+		 * 		2. if object is equal to a node.data, then check for
+		 * 		any duplicates and break.
+		 * 		3. if object is not greater than any node.data, then it
+		 * 		is before head, so cursor = head.
 		 */
 		public MyIterator(Appointment o) {
 			
