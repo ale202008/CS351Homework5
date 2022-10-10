@@ -207,7 +207,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 				}
 			}
 			Node temp = new Node(element);
-			if (i == tail) {
+			if (i == tail && element.compareTo(tail.data) > 0) {
 				tail.next = temp;
 				temp.prev = tail;
 				tail = temp;
@@ -396,7 +396,10 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			
 			Node tempCursor = cursor;
 			cursor = cursor.next;
-		
+			canRemove = true;
+			
+			
+			
 			assert wellFormed(): "invariant failed at the end of next";
 			
 			return tempCursor.data;
@@ -419,6 +422,13 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			if (version != colVersion) {
 				throw new ConcurrentModificationException();
 			}
+			if (!canRemove) {
+				throw new IllegalStateException();
+			}
+			
+			cursor.prev.next = cursor.next;
+			cursor.next.prev = cursor.prev;
+			
 
 			
 			assert wellFormed(): "invariant failed at the end of remove";
