@@ -190,14 +190,14 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		if (head == null) {
 			head = new Node(element);
 			tail = head;
-			manyItems++;
+
 		}
 		else if (head.data.compareTo(element) >= 0){
 			Node temp = new Node(element);
 			temp.next = head;
 			head.prev = temp;
 			head = temp;
-			manyItems++;
+
 		}
 		else if (head.data.compareTo(element) < 0){
 			Node i;
@@ -219,7 +219,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 				i.prev = temp;
 			}
 			
-			manyItems++;
+
 		}
 		
 		for (Node i = head; i != null; i = i.next) {
@@ -229,6 +229,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			}
 		}
 		
+		manyItems++;
 		version++;
 		assert wellFormed() : "invariant failed at end of add";
 		return true;
@@ -267,11 +268,11 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 	}
 	
 	/*
-	 * Straight copy of the clone method in Homework 4
-	 * except that it does not check for the current element
-	 * as we do not have a cursor in main class. Might see if I can
-	 * check through MyIterator class, or might not need to.
+	 * Realized that the clone method was inefficient, so instead used a code
+	 * given from Homework 4 solutions as a base and am working on it to work
+	 * with the fields next and prev.
 	 */
+	@Override //implementation
 	public NewApptBook clone() {
 		
 		assert wellFormed(): "Invariant failed at the start of clone";
@@ -292,9 +293,25 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		}
 	
 		answer = new NewApptBook();
+//		
+//		for (Node i = this.head; i != null; i = i.next) {
+//			answer.add(i.data);
+//		}
 		
-		for (Node i = this.head; i != null; i = i.next) {
-			answer.add(i.data);
+		Node last = null;
+		for (Node i = head; i != null; i = i.next) {
+			Node tempNode = new Node(i.data);
+			if (i == head) {
+				answer.head = tempNode;
+			}
+			if (i == tail) {
+				answer.tail = tempNode;
+			}
+			else {
+				last.next = tempNode;
+			}
+			last = tempNode;
+			answer.manyItems++;
 		}
 		
 		assert wellFormed(): "Invariant failed at the end of clone";
@@ -312,6 +329,9 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 	
 	public Iterator<Appointment> iterator(Appointment o) {
 		// TODO Auto-generated method stub
+		if (o == null) {
+			throw new NullPointerException();
+		}
 		MyIterator it = new MyIterator(o);
 		return it;
 	}
@@ -508,7 +528,9 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 					cursor = null;
 				}
 			}
-			
+			if (cursor == null && o.compareTo(head.data) < 0) {
+				cursor = head;
+			}
 		}
 	}
 	
