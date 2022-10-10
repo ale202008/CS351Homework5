@@ -192,7 +192,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			tail = head;
 
 		}
-		else if (head.data.compareTo(element) >= 0){
+		else if (head.data.compareTo(element) > 0){
 			Node temp = new Node(element);
 			temp.next = head;
 			head.prev = temp;
@@ -216,8 +216,6 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			i.next.prev = temp;
 			temp.prev = i;
 			i.next = temp;
-			
-			
 		}
 		
 		
@@ -285,10 +283,6 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		}
 	
 		answer = new NewApptBook();
-//		
-//		for (Node i = this.head; i != null; i = i.next) {
-//			answer.add(i.data);
-//		}
 		
 		Node last = null;
 		for (Node i = head; i != null; i = i.next) {
@@ -301,6 +295,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			}
 			else {
 				last.next = tempNode;
+				tempNode.prev = last;
 			}
 			last = tempNode;
 			answer.manyItems++;
@@ -450,30 +445,25 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 				throw new IllegalStateException();
 			}
 			
-			Node i;
-			for(i = head; i != null; i = i.next) {
-				if (i == cursor) {
-					break;
-				}
-			}
+
 			if (manyItems == 1) {
 				tail = head = null;
 			}
-			else if (i.prev == null) {
+			else if (cursor.prev == null) {
 				head.next.prev = null;
 				head = head.next;
 			}
-			else if (i.next == null) {
+			else if (cursor.next == null) {
 				tail.prev.next = null;
 				tail = tail.prev;
 			}
-			else if(i.prev != null && i.next != null) {
-				i.prev.next = i.next;
-				i.next.prev = i.prev;
+			else{
+				cursor.prev.next = cursor.next;
+				cursor.next.prev = cursor.prev;
 			}
 			
-			if (i.next != null) {
-				cursor = i.next;
+			if (cursor.next != null) {
+				cursor = cursor.next;
 			}
 			else {
 				cursor = null;
@@ -520,7 +510,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 					cursor = null;
 				}
 			}
-			if (cursor == null && o.compareTo(head.data) < 0) {
+			if (cursor == null && head != null && o.compareTo(head.data) < 0) {
 				cursor = head;
 			}
 		}
