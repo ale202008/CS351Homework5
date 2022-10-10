@@ -376,6 +376,10 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 				throw new ConcurrentModificationException();
 			}
 			
+			if (!canRemove) {
+				return (cursor != null);
+			}
+			
 			return (cursor != null && cursor.next != null);
 		}
 
@@ -412,7 +416,10 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		
 		
 		/*
-		 * Copied from Homework 3, with no work on it yet.
+		 * Remove method that starts by locating the node that cursor is equal
+		 * to so that we can manipulate the nodes fields with special cases such as:
+		 * their exists only 1 element, the element is heads or tails, and regular 
+		 * element.
 		 */
 		public void remove() {
 			/**
@@ -431,11 +438,31 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 				throw new IllegalStateException();
 			}
 			
-			cursor.prev.next = cursor.next;
-			cursor.next.prev = cursor.prev;
-			
+			Node i;
+			for(i = head; i != null; i = i.next) {
+				if (i == cursor) {
+					break;
+				}
+			}
+			if (manyItems == 1) {
+				tail = head = null;
+			}
+			if (i == head && i.next != null) {
+				head = head.next;
+				head.prev = null;
+			}
 
-			
+			if (i.next != null) {
+				cursor = i.next;
+			}
+			else {
+				cursor = null;
+				canRemove = false;
+			}
+
+			manyItems--;
+			colVersion++;
+			version = colVersion;
 			assert wellFormed(): "invariant failed at the end of remove";
 				
 		}
