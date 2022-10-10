@@ -452,14 +452,9 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 				head.prev = null;
 			}
 
-			if (i.next != null) {
-				cursor = i.next;
-			}
-			else {
-				cursor = null;
-				canRemove = false;
-			}
 
+			cursor = null;
+			canRemove = false;
 			manyItems--;
 			colVersion++;
 			version = colVersion;
