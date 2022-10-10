@@ -192,7 +192,7 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			tail = head;
 			manyItems++;
 		}
-		else if (head.data.compareTo(element) > 0){
+		else if (head.data.compareTo(element) >= 0){
 			Node temp = new Node(element);
 			temp.next = head;
 			head.prev = temp;
@@ -459,8 +459,14 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 				i.prev.next = i.next;
 				i.next.prev = i.prev;
 			}
-
-			cursor = null;
+			
+			if (i.next != null) {
+				cursor = i.next;
+			}
+			else {
+				cursor = null;
+			}
+			
 			canRemove = false;
 			manyItems--;
 			colVersion++;
