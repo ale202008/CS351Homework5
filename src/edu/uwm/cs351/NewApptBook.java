@@ -501,17 +501,20 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		 * not in the list.
 		 */
 		public MyIterator(Appointment o) {
-			for (Node i = head; i != null; i = i.next) {
-				if (i.data == o) {
-					cursor = i;
+			
+			for (Node i = tail; i != null; i = i.prev) {
+				if (o.compareTo(i.data) > 0) {
+					cursor = i.next;
 					break;
 				}
-				else {
-					cursor = null;
+				if (o.compareTo(i.data) == 0) {
+					cursor = i;
+					if (i.prev != null && i.prev.data != i.data) {
+						break;
+					}
 				}
-			}
-			if (cursor == null && head != null && o.compareTo(head.data) < 0) {
-				cursor = head;
+				else
+					cursor = head;
 			}
 		}
 	}
