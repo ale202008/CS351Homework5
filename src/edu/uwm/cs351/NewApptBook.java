@@ -53,7 +53,6 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		 */
 		public Node(Appointment o) {
 			data = o;
-			next = prev = null;
 		}
 		
 	}
@@ -188,22 +187,38 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			throw new IllegalArgumentException();
 		}
 		
-		if (head == null || head.data.compareTo(element) > 0)  {
+		if (head == null)  {
 			head = new Node(element);
+			tail = head;
 			manyItems++;
-			if (manyItems == 1) {
-				tail = head;
-			}
 		}
 		else {
 			Node i;
-			for (i = head; i.next != null; i = i.next) {
-				if(i.next.data.compareTo(element) > 0) {
+			for (i = tail; i != null && i.prev != null; i = i.prev) {
+				if (element.compareTo(i.data) < 0) {
 					break;
 				}
 			}
-			i.next = new Node(element);
+			Node temp = new Node(element);
+			
+			temp.next = i;
+			i.prev = temp;
+			
+			
+			if (i == head) {
+				head = temp;
+			}
+			
+			
+			
 			manyItems++;
+		}
+		
+		for (Node i = head; i != null; i = i.next) {
+			if (i.next == null) {
+				tail = i;
+				break;
+			}
 		}
 		
 		version++;
@@ -352,11 +367,9 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			if (version != colVersion) {
 				throw new ConcurrentModificationException();
 			}
-			if (cursor == null || cursor.next == null) {
-				return false;
-			}
-				
-			return true;
+
+
+			return (cursor != null);
 		}
 
 		@Override //required
@@ -373,26 +386,24 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 				}
 			}
 			
+			Node tempCursor = cursor;
 			cursor = cursor.next;
-			
-
-			
-			
+		
 			assert wellFormed(): "invariant failed at the end of next";
 			
-			return cursor.data;
+			return tempCursor.data;
 		}
 
 		@Override //required
 		public Iterator<Appointment> iterator() {
 			// TODO Auto-generated method stub
-			cursor = null;
+
 			return this;
 
 		}
 		
 		public MyIterator() {
-			cursor.next = head;
+			cursor = head;
 		}
 		
 		public MyIterator(Appointment o) {
