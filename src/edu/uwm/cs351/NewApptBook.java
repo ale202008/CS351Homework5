@@ -447,11 +447,18 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			if (manyItems == 1) {
 				tail = head = null;
 			}
-			if (i == head && i.next != null) {
+			else if (i.prev == null) {
+				head.next.prev = null;
 				head = head.next;
-				head.prev = null;
 			}
-
+			else if (i.next == null) {
+				tail.prev.next = null;
+				tail = tail.prev;
+			}
+			else if(i.prev != null && i.next != null) {
+				i.prev.next = i.next;
+				i.next.prev = i.prev;
+			}
 
 			cursor = null;
 			canRemove = false;
