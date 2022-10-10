@@ -167,12 +167,11 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 	}
 	
 	/*
-	 * I am going to use pretty much the same code from the
-	 * insert method from Homework 4 with some additional
-	 * changes. Pretty sure I am going to be implementing
-	 * the insertSort mentioned in the lecture notes, but
-	 * if copying over the code from the past homework
-	 * works then we roll with it.
+	 * Had to apply some changes so that the add method can work.
+	 * Basically checks if there is an empty list just add the element,
+	 * if the element is < the head just add before, and if it is greater
+	 * look for which node it is less than and if not that means it is greater
+	 * than the tail so add it at the end.
 	 */
 	public boolean add(Appointment element){	
 		assert wellFormed() : "invariant failed at start of add";
@@ -184,32 +183,41 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		 */
 		
 		if (element == null) {
-			throw new IllegalArgumentException();
+			throw new NullPointerException();
 		}
 		
-		if (head == null)  {
+		
+		if (head == null) {
 			head = new Node(element);
 			tail = head;
 			manyItems++;
 		}
-		else {
+		else if (head.data.compareTo(element) > 0){
+			Node temp = new Node(element);
+			temp.next = head;
+			head.prev = temp;
+			head = temp;
+			manyItems++;
+		}
+		else if (head.data.compareTo(element) < 0){
 			Node i;
-			for (i = tail; i != null && i.prev != null; i = i.prev) {
+			for (i = head; i != null && i.next != null; i = i.next) {
 				if (element.compareTo(i.data) < 0) {
 					break;
 				}
 			}
 			Node temp = new Node(element);
-			
-			temp.next = i;
-			i.prev = temp;
-			
-			
-			if (i == head) {
-				head = temp;
+			if (i == tail) {
+				tail.next = temp;
+				temp.prev = tail;
+				tail = temp;
 			}
-			
-			
+			else {
+				temp.next = i;
+				temp.prev = i.prev;
+				i.prev.next = temp;
+				i.prev = temp;
+			}
 			
 			manyItems++;
 		}
@@ -392,6 +400,29 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			assert wellFormed(): "invariant failed at the end of next";
 			
 			return tempCursor.data;
+		}
+		
+		
+		/*
+		 * Copied from Homework 3, with no work on it yet.
+		 */
+		public void remove() {
+			/**
+			 * Since we are removing the current element that means there will not exist
+			 * an element within the iterator if the collection has not changed. So the condition
+			 * is that after the remove method is called once, next = 0 and current = 0 like how
+			 * the fields were initialized in the constructors.
+			 */
+			
+			assert wellFormed(): "invariant failed at the start of remove";
+			
+			if (version != colVersion) {
+				throw new ConcurrentModificationException();
+			}
+
+			
+			assert wellFormed(): "invariant failed at the end of remove";
+				
 		}
 
 		@Override //required
