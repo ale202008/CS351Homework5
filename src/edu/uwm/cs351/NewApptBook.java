@@ -375,20 +375,8 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 			if (version != colVersion) {
 				throw new ConcurrentModificationException();
 			}
-
-			int count = 0;
-			for (Node i = head; i != null; i = i.next) {
-				if (i != null) {
-					count++;
-				}
-			}
 			
-			if (cursor == null && head == null) {
-				return false;
-			}
-			
-			
-			return count <= manyItems;
+			return (cursor != null && cursor.next != null);
 		}
 
 		@Override //required
@@ -405,14 +393,16 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 				}
 			}
 			
-			if (manyItems == 1) {
-				cursor = head;
+			if (!canRemove) {
+				canRemove = true;
 			}
 			else {
 				cursor = cursor.next;
+				if (cursor == null) {
+					canRemove = false;
+				}
 			}
-			
-
+				
 
 			
 			assert wellFormed(): "invariant failed at the end of next";
@@ -453,13 +443,12 @@ public class NewApptBook extends AbstractCollection<Appointment> implements Clon
 		@Override //required
 		public Iterator<Appointment> iterator() {
 			// TODO Auto-generated method stub
-
 			return this;
 
 		}
 		
 		public MyIterator() {
-			cursor = null;
+			cursor = head;
 		}
 		
 		public MyIterator(Appointment o) {
